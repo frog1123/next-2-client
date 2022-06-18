@@ -1,37 +1,21 @@
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useState, useEffect } from 'react';
-
-import { gql } from '@apollo/client';
-import client from '../../apollo-client';
+import { gql, useQuery } from '@apollo/client';
 
 const Posts: NextPage = () => {
-  const router = useRouter();
-  const { id } = router.query;
-  const [data, setData] = useState<any>(null);
-  const [isLoading, setLoading] = useState(false);
+  const query = gql`
+    query post($id: ID!) {
+      post(id: $id)
+    }
+  `;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const { data } = await client.query({
-        query: gql`
-          query {
-            post(id: "asdas")
-          }
-        `
-      });
-      setData(data);
-      setLoading(false);
+  const { id } = useRouter().query;
+  const { error, loading, data } = useQuery(query, { variables: { id: id } });
 
-      // console.log(data);
-    };
+  if (loading) return <h1>loading</h1>;
+  if (error) return <h1>error</h1>;
 
-    fetchData();
-  }, []);
-
-  if (isLoading) return <p>Loading...</p>;
-  if (!data) return <p>No profile data</p>;
+  console.log(data);
 
   return (
     <div>
