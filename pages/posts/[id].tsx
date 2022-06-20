@@ -5,7 +5,11 @@ import { gql, useQuery } from '@apollo/client';
 const Posts: NextPage = () => {
   const query = gql`
     query post($id: ID!) {
-      post(id: $id)
+      post(id: $id) {
+        id
+        title
+        content
+      }
     }
   `;
 
@@ -19,7 +23,9 @@ const Posts: NextPage = () => {
 
   return (
     <div>
-      <h1>posts id: {data.post}</h1>
+      <h1>title: {data.post.title}</h1>
+      <h2>content: {data.post.content}</h2>
+      <h2>id: {data.post.id}</h2>
     </div>
   );
 };
